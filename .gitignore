@@ -1,0 +1,13 @@
+# Saida de build do NetBeans/Ant
+build/
+dist/
+
+# Configuracao local de cada integrante (nao versionar)
+nbproject/private/
+
+# Credenciais do banco
+src/db.properties
+
+# Sistema
+.DS_Store
+Thumbs.db
