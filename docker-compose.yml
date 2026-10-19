@@ -8,11 +8,11 @@ services:
       TZ: America/Sao_Paulo
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     ports:
-      - "3307:3306"                  # porta_do_seu_pc:porta_do_container
+      - "3307:3306"                  # porta_do_pc:porta_container
     volumes:
-      # Todo arquivo .sql da pasta sql/ roda sozinho na PRIMEIRA vez que o banco sobe
+      # todos os arquivos q sao .sql na pasta sql vai rodar sozinho apenas na >PRIMEIRA< vez que o banco sobe
       - ./sql:/docker-entrypoint-initdb.d:ro
-      # Guarda os dados do banco mesmo se o container for desligado
+      # vai guardar os dados do banco de dados mesmo se o container do docker for desligado
       - contacerta-dados:/var/lib/mysql
 
 volumes:
