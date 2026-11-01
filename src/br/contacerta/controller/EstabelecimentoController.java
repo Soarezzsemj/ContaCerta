@@ -1,32 +1,64 @@
 package br.contacerta.controller;
 
-/**
- * CRUD SIMPLES 4 - ESTABELECIMENTO
- *
- * Controla o cadastro dos lugares onde o gasto foi feito
- * (ex.: Supermercado Big Box, Posto Shell, iFood).
- *
- * Caminho de uma ação:
- *   TelaEstabelecimento (view) -> EstabelecimentoController -> EstabelecimentoDAO (dao) -> banco
- *
- * O que este controller faz:
- *   - Recebe os dados digitados na tela.
- *   - Valida antes de mandar para o banco (ex.: nome obrigatório).
- *   - Chama o EstabelecimentoDAO para executar o SQL.
- *   - Devolve o resultado (ou a mensagem de erro) para a tela mostrar.
- *
- * Métodos a implementar (CRUD completo):
- *   - inserir(...)   -> C: cadastrar novo estabelecimento
- *   - listar()       -> R: listar todos os estabelecimentos
- *   - alterar(...)   -> U: editar um estabelecimento existente
- *   - excluir(id)    -> D: excluir um estabelecimento
- *
- * Atenção: estabelecimento que já tem gasto ligado não pode ser excluído
- * (chave estrangeira). Trate esse erro e avise o usuário.
- *
- * NÃO coloque SQL aqui (isso fica no DAO) nem código de tela (isso fica na view).
- */
+import br.contacerta.dao.EstabelecimentoDAO;
+import br.contacerta.model.Estabelecimento;
+import java.sql.SQLException;
+import java.util.ArrayList;
 
 public class EstabelecimentoController {
-    
+    private final EstabelecimentoDAO dao = new EstabelecimentoDAO();
+
+    private Estabelecimento montar(int id, String nome, String cidade) throws Exception {
+        nome = nome == null ? "" : nome.trim();
+        cidade = cidade == null ? "" : cidade.trim();
+
+        if (nome.isEmpty()) {
+            throw new Exception("Informe o nome do estabelecimento.");
+        }
+        if (nome.length() > 80) {
+            throw new Exception("O nome pode ter no máximo 80 caracteres.");
+        }
+        if (cidade.length() > 60) {
+            throw new Exception("A cidade pode ter no máximo 60 caracteres.");
+        }
+
+        return new Estabelecimento(id, nome, cidade.isEmpty() ? null : cidade);
+    }
+
+    public void inserir(String nome, String cidade) throws Exception {
+        Estabelecimento e = montar(0, nome, cidade);
+        try {
+            dao.inserir(e);
+        } catch (SQLException ex) {
+            throw new Exception("Erro ao cadastrar o estabelecimento: " + ex.getMessage());
+        }
+    }
+
+    public ArrayList<Estabelecimento> listar() throws Exception {
+        try {
+            return dao.listar();
+        } catch (SQLException ex) {
+            throw new Exception("Erro ao listar os estabelecimentos: " + ex.getMessage());
+        }
+    }
+
+    public void alterar(int id, String nome, String cidade) throws Exception {
+        Estabelecimento e = montar(id, nome, cidade);
+        try {
+            dao.alterar(e);
+        } catch (SQLException ex) {
+            throw new Exception("Erro ao alterar o estabelecimento: " + ex.getMessage());
+        }
+    }
+
+    public void excluir(int id) throws Exception {
+        try {
+            dao.excluir(id);
+        } catch (SQLException ex) {
+            if (ex.getErrorCode() == 1451) {
+                throw new Exception("Este estabelecimento está sendo usado por gastos e não pode ser excluído.");
+            }
+            throw new Exception("Erro ao excluir o estabelecimento: " + ex.getMessage());
+        }
+    }
 }
