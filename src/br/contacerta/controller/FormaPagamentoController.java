@@ -1,30 +1,75 @@
 package br.contacerta.controller;
+
+import br.contacerta.dao.FormaPagamentoDAO;
+import br.contacerta.model.FormaPagamento;
+import java.sql.SQLException;
+import java.util.ArrayList;
+
 /**
  * CRUD SIMPLES 2 - FORMA DE PAGAMENTO
- *
- * Controla o cadastro das formas de pagamento (ex.: Pix, Dinheiro, Cartão de crédito, Débito).
  *
  * Caminho de uma ação:
  *   TelaFormaPagamento (view) -> FormaPagamentoController -> FormaPagamentoDAO (dao) -> banco
  *
- * O que este controller faz:
- *   - Recebe os dados digitados na tela.
- *   - Valida antes de mandar para o banco (ex.: descrição não pode ficar vazia).
- *   - Chama o FormaPagamentoDAO para executar o SQL.
- *   - Devolve o resultado (ou a mensagem de erro) para a tela mostrar.
- *
- * Métodos a implementar (CRUD completo):
- *   - inserir(...)   -> C: cadastrar nova forma de pagamento
- *   - listar()       -> R: listar todas as formas de pagamento
- *   - alterar(...)   -> U: editar uma forma de pagamento existente
- *   - excluir(id)    -> D: excluir uma forma de pagamento
- *
- * Atenção: forma de pagamento que já foi usada em algum gasto não pode ser
- * excluída (chave estrangeira). Trate esse erro e avise o usuário.
- *
- * NÃO coloque SQL aqui (isso fica no DAO) nem código de tela (isso fica na view).
+ * Valida os dados vindos da tela, chama o DAO e traduz os erros do MySQL
+ * (1062 = nome repetido, 1451 = forma de pagamento em uso por algum gasto).
  */
-
 public class FormaPagamentoController {
-    
+    private final FormaPagamentoDAO dao = new FormaPagamentoDAO();
+
+    private FormaPagamento montar(int id, String nome) throws Exception {
+        nome = nome == null ? "" : nome.trim();
+
+        if (nome.isEmpty()) {
+            throw new Exception("Informe o nome da forma de pagamento.");
+        }
+        if (nome.length() > 30) {
+            throw new Exception("O nome pode ter no máximo 30 caracteres.");
+        }
+
+        return new FormaPagamento(id, nome);
+    }
+
+    public void inserir(String nome) throws Exception {
+        FormaPagamento f = montar(0, nome);
+        try {
+            dao.inserir(f);
+        } catch (SQLException ex) {
+            if (ex.getErrorCode() == 1062) {
+                throw new Exception("Já existe uma forma de pagamento com esse nome.");
+            }
+            throw new Exception("Erro ao cadastrar a forma de pagamento: " + ex.getMessage());
+        }
+    }
+
+    public ArrayList<FormaPagamento> listar() throws Exception {
+        try {
+            return dao.listar();
+        } catch (SQLException ex) {
+            throw new Exception("Erro ao listar as formas de pagamento: " + ex.getMessage());
+        }
+    }
+
+    public void alterar(int id, String nome) throws Exception {
+        FormaPagamento f = montar(id, nome);
+        try {
+            dao.alterar(f);
+        } catch (SQLException ex) {
+            if (ex.getErrorCode() == 1062) {
+                throw new Exception("Já existe uma forma de pagamento com esse nome.");
+            }
+            throw new Exception("Erro ao alterar a forma de pagamento: " + ex.getMessage());
+        }
+    }
+
+    public void excluir(int id) throws Exception {
+        try {
+            dao.excluir(id);
+        } catch (SQLException ex) {
+            if (ex.getErrorCode() == 1451) {
+                throw new Exception("Esta forma de pagamento está sendo usada por gastos e não pode ser excluída.");
+            }
+            throw new Exception("Erro ao excluir a forma de pagamento: " + ex.getMessage());
+        }
+    }
 }
