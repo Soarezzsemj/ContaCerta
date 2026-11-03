@@ -5,15 +5,6 @@ import br.contacerta.model.FormaPagamento;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-/**
- * CRUD SIMPLES 2 - FORMA DE PAGAMENTO
- *
- * Caminho de uma ação:
- *   TelaFormaPagamento (view) -> FormaPagamentoController -> FormaPagamentoDAO (dao) -> banco
- *
- * Valida os dados vindos da tela, chama o DAO e traduz os erros do MySQL
- * (1062 = nome repetido, 1451 = forma de pagamento em uso por algum gasto).
- */
 public class FormaPagamentoController {
     private final FormaPagamentoDAO dao = new FormaPagamentoDAO();
 

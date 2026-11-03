@@ -50,7 +50,7 @@ public class Conta {
         this.saldoInicial = saldoInicial;
     }
 
-    // Usado pelo JComboBox da tela de Gasto: mostra o nome em vez do objeto
+    //mostra o nome em vez do objeto
     @Override
     public String toString() {
         return nome;

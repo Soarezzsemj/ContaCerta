@@ -37,4 +37,10 @@ public class Estabelecimento {
     public void setCidade(String cidade) {
         this.cidade = cidade;
     }
+
+    // mostra o nome em vez do objeto
+    @Override
+    public String toString() {
+        return nome;
+    }
 }

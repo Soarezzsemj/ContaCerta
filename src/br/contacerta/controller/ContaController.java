@@ -6,15 +6,6 @@ import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-/**
- * CRUD SIMPLES 3 - CONTA
- *
- * Caminho de uma ação:
- *   TelaConta (view) -> ContaController -> ContaDAO (dao) -> banco
- *
- * Valida os dados vindos da tela, chama o DAO e traduz os erros do MySQL
- * (1062 = nome repetido, 1451 = conta em uso por algum gasto).
- */
 public class ContaController {
     private final ContaDAO dao = new ContaDAO();
 

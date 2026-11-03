@@ -1,31 +1,110 @@
 package br.contacerta.controller;
 
-/**
- * CRUD SIMPLES 1 - CATEGORIA
- *
- * Controla o cadastro de categorias de gasto (ex.: Alimentação, Transporte, Lazer).
- *
- * Caminho de uma ação:
- *   TelaCategoria (view) -> CategoriaController -> CategoriaDAO (dao) -> banco
- *
- * O que este controller faz:
- *   - Recebe os dados digitados na tela.
- *   - Valida antes de mandar para o banco (ex.: nome não pode ficar vazio).
- *   - Chama o CategoriaDAO para executar o SQL.
- *   - Devolve o resultado (ou a mensagem de erro) para a tela mostrar.
- *
- * Métodos a implementar (CRUD completo):
- *   - inserir(...)   -> C: cadastrar nova categoria
- *   - listar()       -> R: listar todas as categorias
- *   - alterar(...)   -> U: editar uma categoria existente
- *   - excluir(id)    -> D: excluir uma categoria
- *
- * Atenção: categoria que já tem gasto ligado não pode ser excluída
- * (chave estrangeira). Trate esse erro e mostre uma mensagem clara na tela.
- *
- * NÃO coloque SQL aqui (isso fica no DAO) nem código de tela (isso fica na view).
- */
+import br.contacerta.dao.CategoriaDAO;
+import br.contacerta.model.Categoria;
+import java.sql.SQLException;
+import java.util.ArrayList;
+
 
 public class CategoriaController {
+    
+    private final CategoriaDAO dao = new CategoriaDAO();
+    
+    public void inserir(int id, String nome, String descricao) throws Exception {      
+        if(nome == null){
+            nome = "";
+        } else {
+            nome = nome.trim();
+        }
+        
+        if(descricao == null){
+            descricao = "";
+        } else {
+            descricao = descricao.trim();
+        }
+        
+        
+         if (nome.isEmpty()) {
+            throw new Exception("Informe o nome da categoria.");
+        }
+         if (nome.length() > 50) {
+            throw new Exception("Passou do limite de caracteres");
+        }
+         if (descricao.length() > 150) {
+            throw new Exception("Passou do limite de caracteres");
+        }
+       
+      Categoria c = new Categoria(0, nome, descricao); 
+        try {
+            dao.inserir(c);
+        } catch (SQLException ex) {
+            if (ex.getErrorCode() == 1062) {
+                throw new Exception("Já existe uma categoria com esse nome.");
+            }
+            throw new Exception("Erro ao cadastrar a categoria: " + ex.getMessage());
+        }
+         
+        
+    }
+    
+    
+    public void alterar(int id, String nome, String descricao) throws Exception {
+        
+        if(nome == null){
+            nome = "";
+        } else {
+            nome = nome.trim();
+        }
+
+        if(descricao == null){
+            descricao = "";
+        } else {
+            descricao = descricao.trim();
+        }
+
+        if (nome.isEmpty()) {
+            throw new Exception("Informe o nome da categoria.");
+        }
+        if (nome.length() > 50) {
+            throw new Exception("Passou do limite de caracteres");
+        }
+        if (descricao.length() > 150) {
+            throw new Exception("Passou do limite de caracteres");
+}
+        
+       Categoria c = new Categoria(id, nome, descricao); 
+        try {
+            dao.alterar(c);
+        } catch (SQLException ex) {
+          if (ex.getErrorCode() == 1062) {
+           throw new Exception("Já existe uma categoria com esse nome.");
+            }
+          throw new Exception("Erro ao alterar a categoria: " + ex.getMessage());
+        }
+    }
+    
+    
+    public void excluir(int id) throws Exception {
+    try {
+        dao.excluir(id);
+    } catch (SQLException ex) {
+        if (ex.getErrorCode() == 1451) {
+            throw new Exception("Esta categoria está sendo usada por gastos e não pode ser excluída.");
+        }
+        throw new Exception("Erro ao excluir a categoria: " + ex.getMessage());
+    }
+}
+    
+    public ArrayList<Categoria> listar() throws Exception {
+    try {
+        return dao.listar();
+    } catch (SQLException ex) {
+        throw new Exception("Erro ao carregar as categorias: " + ex.getMessage());
+    }
+}
+    
+    
+    
+    
     
 }
