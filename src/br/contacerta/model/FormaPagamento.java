@@ -28,7 +28,7 @@ public class FormaPagamento {
         this.nome = nome;
     }
 
-    // Usado pelo JComboBox da tela de Gasto: mostra o nome em vez do objeto
+    // usado na tela pra mostra o nome em vez do objeto
     @Override
     public String toString() {
         return nome;

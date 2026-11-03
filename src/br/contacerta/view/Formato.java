@@ -6,7 +6,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
-// Formatação de datas e valores para exibir nas telas
+// formatacao de datas e valores para exibir nas telas
 public final class Formato {
 
     // mesmo formato que Validacao.converterData() espera ao ler a data digitada
