@@ -15,7 +15,7 @@ import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 
-public class TelaGasto extends javax.swing.JPanel {
+public class TelaGasto extends javax.swing.JFrame {
     private final GastoController controller = new GastoController();
 
     private DefaultTableModel modelo = new DefaultTableModel(new Object[]{"Código", "Data", "Descrição", "Valor",
@@ -31,10 +31,6 @@ public class TelaGasto extends javax.swing.JPanel {
 
     public TelaGasto() {
         initComponents();
-        Estilo.titulo(lblTitulo);
-        Estilo.dica(lblDicaData);
-        Estilo.estilizarTabela(tabela);
-        Estilo.alinharDireita(tabela, 3); // valor
 
         tabela.getSelectionModel().addListSelectionListener(e -> {
             int linha = tabela.getSelectedRow();
@@ -79,6 +75,9 @@ public class TelaGasto extends javax.swing.JPanel {
         scrollTabela = new javax.swing.JScrollPane();
         tabela = new javax.swing.JTable();
 
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("ContaCerta - Gastos");
+
         lblTitulo.setText("Gastos");
 
         lblDescricao.setText("Descrição:");
@@ -97,21 +96,21 @@ public class TelaGasto extends javax.swing.JPanel {
 
         lblEstabelecimento.setText("Estabelecimento:");
 
-        btnNovo.setText("✚ Novo");
+        btnNovo.setText("Novo");
         btnNovo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnNovoActionPerformed(evt);
             }
         });
 
-        btnSalvar.setText("✔ Salvar");
+        btnSalvar.setText("Salvar");
         btnSalvar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnSalvarActionPerformed(evt);
             }
         });
 
-        btnExcluir.setText("✖ Excluir");
+        btnExcluir.setText("Excluir");
         btnExcluir.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnExcluirActionPerformed(evt);
@@ -122,8 +121,8 @@ public class TelaGasto extends javax.swing.JPanel {
         tabela.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         scrollTabela.setViewportView(tabela);
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
@@ -200,6 +199,8 @@ public class TelaGasto extends javax.swing.JPanel {
                 .addContainerGap())
         );
 
+        pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnNovoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNovoActionPerformed
@@ -232,11 +233,10 @@ public class TelaGasto extends javax.swing.JPanel {
             modelo.setRowCount(0);
             gastos = controller.listar();
             for (Gasto g : gastos) {
-                modelo.addRow(new Object[]{g.getIdGasto(), Estilo.formatarData(g.getDataGasto()), g.getDescricao(),
-                    Estilo.formatarMoeda(g.getValor()), g.getNomeCategoria(), g.getNomeFormaPagamento(),
+                modelo.addRow(new Object[]{g.getIdGasto(), Formato.formatarData(g.getDataGasto()), g.getDescricao(),
+                    Formato.formatarMoeda(g.getValor()), g.getNomeCategoria(), g.getNomeFormaPagamento(),
                     g.getNomeConta(), g.getNomeEstabelecimento()});
             }
-            Estilo.ajustarColunas(tabela);
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
         }
@@ -246,7 +246,7 @@ public class TelaGasto extends javax.swing.JPanel {
         idSelecionado = g.getIdGasto();
         txtDescricao.setText(g.getDescricao());
         txtValor.setText(g.getValor().toPlainString().replace('.', ','));
-        txtData.setText(Estilo.formatarData(g.getDataGasto()));
+        txtData.setText(Formato.formatarData(g.getDataGasto()));
         selecionarPorId(cbCategoria, Categoria::getIdCategoria, g.getIdCategoria());
         selecionarPorId(cbFormaPagamento, FormaPagamento::getIdFormaPagamento, g.getIdFormaPagamento());
         selecionarPorId(cbConta, Conta::getIdConta, g.getIdConta());
@@ -267,7 +267,7 @@ public class TelaGasto extends javax.swing.JPanel {
         idSelecionado = 0;
         txtDescricao.setText("");
         txtValor.setText("");
-        txtData.setText(Estilo.formatarData(LocalDate.now()));
+        txtData.setText(Formato.formatarData(LocalDate.now()));
         cbCategoria.setSelectedIndex(-1);
         cbFormaPagamento.setSelectedIndex(-1);
         cbConta.setSelectedIndex(-1);

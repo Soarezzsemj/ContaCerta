@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
-public class TelaCategoria extends javax.swing.JPanel {
+public class TelaCategoria extends javax.swing.JFrame {
     private final CategoriaController controller = new CategoriaController();
 
     // usado pela tabela propriedade model (da p customizar no form editor)
@@ -21,8 +21,6 @@ public class TelaCategoria extends javax.swing.JPanel {
 
     public TelaCategoria() {
         initComponents();
-        Estilo.titulo(lblTitulo);
-        Estilo.estilizarTabela(tabela);
 
         tabela.getSelectionModel().addListSelectionListener(e -> {
             int linha = tabela.getSelectedRow();
@@ -56,27 +54,30 @@ public class TelaCategoria extends javax.swing.JPanel {
         scrollTabela = new javax.swing.JScrollPane();
         tabela = new javax.swing.JTable();
 
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("ContaCerta - Categorias");
+
         lblTitulo.setText("Categorias");
 
         lblNome.setText("Nome:");
 
         lblDescricao.setText("Descrição:");
 
-        btnNovo.setText("✚ Novo");
+        btnNovo.setText("Novo");
         btnNovo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnNovoActionPerformed(evt);
             }
         });
 
-        btnSalvar.setText("✔ Salvar");
+        btnSalvar.setText("Salvar");
         btnSalvar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnSalvarActionPerformed(evt);
             }
         });
 
-        btnExcluir.setText("✖ Excluir");
+        btnExcluir.setText("Excluir");
         btnExcluir.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnExcluirActionPerformed(evt);
@@ -87,8 +88,8 @@ public class TelaCategoria extends javax.swing.JPanel {
         tabela.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         scrollTabela.setViewportView(tabela);
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
@@ -135,6 +136,8 @@ public class TelaCategoria extends javax.swing.JPanel {
                 .addContainerGap())
         );
 
+        pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnNovoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNovoActionPerformed
@@ -156,7 +159,6 @@ public class TelaCategoria extends javax.swing.JPanel {
             for (Categoria c : lista) {
                 modelo.addRow(new Object[]{c.getIdCategoria(), c.getNome(), c.getDescricao()});
             }
-            Estilo.ajustarColunas(tabela);
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
         }

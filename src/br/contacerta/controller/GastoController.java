@@ -110,29 +110,6 @@ public class GastoController {
         }
     }
 
-    // ===== Dashboard (aba Início) =====
-
-    // Gastos dos últimos 30 dias, do mais recente para o mais antigo
-    public ArrayList<Gasto> listarUltimoMes() throws Exception {
-        try {
-            return dao.listarUltimoMes();
-        } catch (SQLException | RuntimeException ex) {
-            throw Validacao.erroBanco(ex, "carregar os gastos do último mês");
-        }
-    }
-
-    public LocalDate inicioUltimoMes() {
-        return LocalDate.now().minusDays(GastoDAO.DIAS_ULTIMO_MES);
-    }
-
-    public BigDecimal somarValores(ArrayList<Gasto> gastos) {
-        BigDecimal total = BigDecimal.ZERO;
-        for (Gasto g : gastos) {
-            total = total.add(g.getValor());
-        }
-        return total;
-    }
-
     public ArrayList<Categoria> listarCategorias() throws Exception {
         try {
             return new CategoriaDAO().listar();

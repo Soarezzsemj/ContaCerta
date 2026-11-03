@@ -28,10 +28,7 @@ public class GastoDAO extends DAO {
         }
     }
 
-    // Quantos dias o dashboard (aba Início) considera como "último mês"
-    public static final int DIAS_ULTIMO_MES = 30;
-
-    // SELECT com JOIN (mesmo padrão de sql/03_consultas.sql): traz os nomes no lugar dos códigos
+    // SELECT com JOIN
     private static final String SELECT_COM_NOMES = "SELECT g.id_gasto, g.data_gasto, g.descricao, g.valor, "
             + "g.id_categoria, g.id_forma_pagamento, g.id_conta, g.id_estabelecimento, "
             + "c.nome AS categoria, f.nome AS forma_pagamento, ct.nome AS conta, e.nome AS estabelecimento "
@@ -48,26 +45,6 @@ public class GastoDAO extends DAO {
         try {
             abrirBanco();
             pst = con.prepareStatement(SELECT_COM_NOMES + ORDEM);
-            rs = pst.executeQuery();
-            return lerGastos();
-        } finally {
-            fecharBanco();
-        }
-    }
-
-    // Gastos dos últimos 30 dias, até hoje (dashboard da aba Início)
-    public ArrayList<Gasto> listarUltimoMes() throws SQLException {
-        LocalDate hoje = LocalDate.now();
-        return listarPorPeriodo(hoje.minusDays(DIAS_ULTIMO_MES), hoje);
-    }
-
-    // Gastos entre duas datas (inclusive)
-    public ArrayList<Gasto> listarPorPeriodo(LocalDate dataInicial, LocalDate dataFinal) throws SQLException {
-        try {
-            abrirBanco();
-            pst = con.prepareStatement(SELECT_COM_NOMES + "WHERE g.data_gasto BETWEEN ? AND ? " + ORDEM);
-            pst.setDate(1, Date.valueOf(dataInicial));
-            pst.setDate(2, Date.valueOf(dataFinal));
             rs = pst.executeQuery();
             return lerGastos();
         } finally {

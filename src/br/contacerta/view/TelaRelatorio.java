@@ -8,7 +8,7 @@ import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 
-public class TelaRelatorio extends javax.swing.JPanel {
+public class TelaRelatorio extends javax.swing.JFrame {
     private final RelatorioController controller = new RelatorioController();
 
     private DefaultTableModel modelo = new DefaultTableModel(new Object[]{"Categoria", "Qtd. de gastos", "Total"}, 0) {
@@ -20,21 +20,13 @@ public class TelaRelatorio extends javax.swing.JPanel {
 
     public TelaRelatorio() {
         initComponents();
-        Estilo.titulo(lblTitulo);
-        Estilo.dica(lblDicaData);
-        Estilo.estilizarTabela(tabela);
-        Estilo.alinharDireita(tabela, 1);
-        Estilo.alinharDireita(tabela, 2);
-        Estilo.negritoUltimaLinha(tabela);
         txtDataInicial.addActionListener(e -> gerar());
         txtDataFinal.addActionListener(e -> gerar());
 
         // sugere o mes atual
         LocalDate hoje = LocalDate.now();
-        txtDataInicial.setText(Estilo.formatarData(hoje.withDayOfMonth(1)));
-        txtDataFinal.setText(Estilo.formatarData(hoje.withDayOfMonth(hoje.lengthOfMonth())));
-
-        Estilo.ajustarColunas(tabela);
+        txtDataInicial.setText(Formato.formatarData(hoje.withDayOfMonth(1)));
+        txtDataFinal.setText(Formato.formatarData(hoje.withDayOfMonth(hoje.lengthOfMonth())));
     }
 
     /**
@@ -56,13 +48,16 @@ public class TelaRelatorio extends javax.swing.JPanel {
         scrollTabela = new javax.swing.JScrollPane();
         tabela = new javax.swing.JTable();
 
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("ContaCerta - Relatório");
+
         lblTitulo.setText("Total gasto por categoria");
 
         lblDataInicial.setText("Data inicial:");
 
         lblDataFinal.setText("Data final:");
 
-        btnGerar.setText("▶ Gerar");
+        btnGerar.setText("Gerar");
         btnGerar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnGerarActionPerformed(evt);
@@ -75,8 +70,8 @@ public class TelaRelatorio extends javax.swing.JPanel {
         tabela.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         scrollTabela.setViewportView(tabela);
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
@@ -116,6 +111,8 @@ public class TelaRelatorio extends javax.swing.JPanel {
                 .addContainerGap())
         );
 
+        pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnGerarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGerarActionPerformed
@@ -131,11 +128,10 @@ public class TelaRelatorio extends javax.swing.JPanel {
                 return;
             }
             for (TotalCategoria t : totais) {
-                modelo.addRow(new Object[]{t.getCategoria(), t.getQuantidade(), Estilo.formatarMoeda(t.getTotal())});
+                modelo.addRow(new Object[]{t.getCategoria(), t.getQuantidade(), Formato.formatarMoeda(t.getTotal())});
             }
             TotalCategoria geral = controller.totalGeral(totais);
-            modelo.addRow(new Object[]{geral.getCategoria(), geral.getQuantidade(), Estilo.formatarMoeda(geral.getTotal())});
-            Estilo.ajustarColunas(tabela);
+            modelo.addRow(new Object[]{geral.getCategoria(), geral.getQuantidade(), Formato.formatarMoeda(geral.getTotal())});
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Atenção", JOptionPane.WARNING_MESSAGE);
         }

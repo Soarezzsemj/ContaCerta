@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
-public class TelaConta extends javax.swing.JPanel {
+public class TelaConta extends javax.swing.JFrame {
     private final ContaController controller = new ContaController();
 
    
@@ -22,9 +22,6 @@ public class TelaConta extends javax.swing.JPanel {
 
     public TelaConta() {
         initComponents();
-        Estilo.titulo(lblTitulo);
-        Estilo.estilizarTabela(tabela);
-        Estilo.alinharDireita(tabela, 3); // saldo
 
        
         tabela.getSelectionModel().addListSelectionListener(e -> {
@@ -62,6 +59,9 @@ public class TelaConta extends javax.swing.JPanel {
         scrollTabela = new javax.swing.JScrollPane();
         tabela = new javax.swing.JTable();
 
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("ContaCerta - Contas");
+
         lblTitulo.setText("Contas");
 
         lblNome.setText("Nome:");
@@ -70,21 +70,21 @@ public class TelaConta extends javax.swing.JPanel {
 
         lblSaldo.setText("Saldo inicial:");
 
-        btnNovo.setText("✚ Novo");
+        btnNovo.setText("Novo");
         btnNovo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnNovoActionPerformed(evt);
             }
         });
 
-        btnSalvar.setText("✔ Salvar");
+        btnSalvar.setText("Salvar");
         btnSalvar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnSalvarActionPerformed(evt);
             }
         });
 
-        btnExcluir.setText("✖ Excluir");
+        btnExcluir.setText("Excluir");
         btnExcluir.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnExcluirActionPerformed(evt);
@@ -95,8 +95,8 @@ public class TelaConta extends javax.swing.JPanel {
         tabela.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         scrollTabela.setViewportView(tabela);
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
@@ -149,6 +149,8 @@ public class TelaConta extends javax.swing.JPanel {
                 .addContainerGap())
         );
 
+        pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnNovoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNovoActionPerformed
@@ -175,7 +177,6 @@ public class TelaConta extends javax.swing.JPanel {
                 String banco = c.getBanco() == null ? "" : c.getBanco();
                 modelo.addRow(new Object[]{c.getIdConta(), c.getNome(), banco, formatarSaldo(c.getSaldoInicial())});
             }
-            Estilo.ajustarColunas(tabela);
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
         }

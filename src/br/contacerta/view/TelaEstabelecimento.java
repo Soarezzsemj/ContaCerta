@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
-public class TelaEstabelecimento extends javax.swing.JPanel {
+public class TelaEstabelecimento extends javax.swing.JFrame {
     private final EstabelecimentoController controller = new EstabelecimentoController();
 
     private DefaultTableModel modelo = new DefaultTableModel(new Object[]{"Código", "Nome", "Cidade"}, 0) {
@@ -20,8 +20,6 @@ public class TelaEstabelecimento extends javax.swing.JPanel {
 
     public TelaEstabelecimento() {
         initComponents();
-        Estilo.titulo(lblTitulo);
-        Estilo.estilizarTabela(tabela);
 
         tabela.getSelectionModel().addListSelectionListener(e -> {
             int linha = tabela.getSelectedRow();
@@ -56,27 +54,30 @@ public class TelaEstabelecimento extends javax.swing.JPanel {
         scrollTabela = new javax.swing.JScrollPane();
         tabela = new javax.swing.JTable();
 
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("ContaCerta - Estabelecimentos");
+
         lblTitulo.setText("Estabelecimentos");
 
         lblNome.setText("Nome:");
 
         lblCidade.setText("Cidade:");
 
-        btnNovo.setText("✚ Novo");
+        btnNovo.setText("Novo");
         btnNovo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnNovoActionPerformed(evt);
             }
         });
 
-        btnSalvar.setText("✔ Salvar");
+        btnSalvar.setText("Salvar");
         btnSalvar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnSalvarActionPerformed(evt);
             }
         });
 
-        btnExcluir.setText("✖ Excluir");
+        btnExcluir.setText("Excluir");
         btnExcluir.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnExcluirActionPerformed(evt);
@@ -87,8 +88,8 @@ public class TelaEstabelecimento extends javax.swing.JPanel {
         tabela.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         scrollTabela.setViewportView(tabela);
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
@@ -135,6 +136,8 @@ public class TelaEstabelecimento extends javax.swing.JPanel {
                 .addContainerGap())
         );
 
+        pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnNovoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNovoActionPerformed
@@ -156,7 +159,6 @@ public class TelaEstabelecimento extends javax.swing.JPanel {
             for (Estabelecimento e : lista) {
                 modelo.addRow(new Object[]{e.getIdEstabelecimento(), e.getNome(), e.getCidade()});
             }
-            Estilo.ajustarColunas(tabela);
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
         }
